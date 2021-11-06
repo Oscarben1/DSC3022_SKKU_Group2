@@ -294,6 +294,7 @@ cvu=tkinter.IntVar()
 cvu_scale=tkinter.Scale(frame4, variable=cvu, orient="horizontal", showvalue=True, tickinterval=4,
                              from_=2020, to=2028, length=170, bg="white")
 cvu_scale.grid(row=4, column=1)
+print(cvu)
 
 # search button 4
 search_button4 = Button(frame4, text="SEARCH")
@@ -371,8 +372,8 @@ lrank_label = Label(frame5, text="League Rank:", bg="white")
 lrank_label.grid(row=2, column=0)
 
 lrank=tkinter.IntVar()
-lrank_scale=tkinter.Scale(frame5, variable=lrank, orient="horizontal", showvalue=True, tickinterval=1,
-                             from_=1, to=4, length=170, bg="white")
+lrank_scale=tkinter.Scale(frame5, variable=lrank, orient="horizontal", showvalue=True, tickinterval=2,
+                             from_=1, to=25, length=200, bg="white")
 lrank_scale.grid(row=2, column=1)
 
 # search button 5
