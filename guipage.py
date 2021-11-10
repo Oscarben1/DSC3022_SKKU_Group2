@@ -2,10 +2,11 @@ from tkinter import *
 from tkinter import messagebox
 window = Tk()
 window.title("FIFA 21")
+window.geometry("1000x700")
 import tkinter as tk
 import tkinter.ttk
 from tkcalendar import Calendar
-
+from PIL import ImageTk, Image
 
 def search():
     whereStatement=False
@@ -88,8 +89,26 @@ def search():
     print(querySQL)
 
 
+# backgroud image    
+bg_image = ImageTk.PhotoImage(Image.open("background.jpg"))
+bg_label = Label(window, image=bg_image)
+bg_label.pack()
+
+# logo image
+logo_image = ImageTk.PhotoImage(Image.open("logo.jpg"))
+logo_label = Label(window, image=logo_image)
+logo_label.place(relx=0.5, rely=0.1, anchor=CENTER)
+
+# tab style
+s = tkinter.ttk.Style()
+s.theme_create("MyStyle", parent="alt", settings={
+        "TNotebook": {"configure": {"tabmargins": [2, 5, 2, 0]}},
+        "TNotebook.Tab": {"configure": {"font" : ('Georgia Pro', '11', 'bold')},}})
+s.theme_use("MyStyle")
+
+# creating notebook
 notebook = tkinter.ttk.Notebook(window, width=800, height=500)
-notebook.pack()
+notebook.place(relx=0.5, rely=0.58, anchor=CENTER)
 
 # tab of player profile
 tab1 = tkinter.Frame(window)
