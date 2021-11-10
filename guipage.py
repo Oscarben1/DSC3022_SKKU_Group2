@@ -7,6 +7,13 @@ import tkinter as tk
 import tkinter.ttk
 from tkcalendar import Calendar
 from PIL import ImageTk, Image
+import datetime
+
+
+def getSQLDate(date):
+    myDate = datetime.datetime.strptime(date, "%m/%d/%H")
+    new_date = "20" + str(myDate.hour) + "-" + str(myDate.month) + "-" + str(myDate.day)
+    return new_date
 
 def search():
     whereStatement=False
@@ -41,10 +48,10 @@ def search():
     if weight_textbox.get() !="":
         if weight_textbox.get().isnumeric():
             if whereStatement:
-                querySQL = querySQL+" AND weight="+weight_textbox.get()
+                querySQL = querySQL+" AND weight>="+weight_textbox.get()
             else:
                 whereStatement=True
-                querySQL = querySQL + " WHERE weight="+weight_textbox.get()
+                querySQL = querySQL + " WHERE weight>="+weight_textbox.get()
         else:
             messagebox.showerror("Error", "Wrong weight")
 
@@ -71,23 +78,45 @@ def search():
 
 #PLAYER SPECIFICATIONS PAGE
     joinOnPlayerSpe= False
-    if tp_combo.get()!="" or np_combo.get()!="" or njnum_textbox!="":
+    if len(tp_combo.get()) != 0 or len(np_combo.get()) != 0 or len(njnum_textbox.get()) != 0:
         joinOnPlayerSpe = True
         querySQL = querySQL[0:92] + " join playerspecifications ps on pc.id=ps.id"+querySQL[92:]
 
-        if tp_combo.get()!="":
+        if len(tp_combo.get())!=0:
             querySQL = querySQL + " AND team_position='"+tp_combo.get()+"'"
-        if np_combo.get()!="":
+        if len(np_combo.get())!=0:
             querySQL = querySQL + " AND nation_position='"+np_combo.get()+"'"
-        if njnum_textbox.get()!="":
+        if len(njnum_textbox.get())!=0:
             if njnum_textbox.get().isnumeric():
                 querySQL = querySQL + " AND nation_jersey_number='"+njnum_textbox.get()+"'"
             else:
                 messagebox.showerror("Error", "Wrong nation jersey number")
 
+# PLAYER CONTRACT PAGE
+
+    if joinOnPlayerSpe:
+        querySQL = querySQL[0:136] + " join playercontract pc on pc.id=pco.id" + querySQL[136:]+" AND value_eur>="+str(value_scale.get())+" AND wage_eur>="+str(wage_scale.get())+" AND release_clause_eur>="+str(rc_scale.get())+" AND join_date>="+str(join.get_date())+" AND contract_valid_until>="+str(cvu_scale.get())
+    else:
+        querySQL = querySQL[0:92] + " join playercontract pc on pc.id=pco.id" + querySQL[92:] + " AND value_eur>=" + str(value_scale.get()) + " AND wage_eur>=" + str(wage_scale.get()) + " AND release_clause_eur>=" + str(rc_scale.get()) + " AND join_date>=" + getSQLDate(join.get_date()) + " AND contract_valid_until>=" + str(cvu_scale.get())
+
+#CLUB PAGE
+    if len(cname_combo.get())!=0 or len(lname_combo.get())!=0 or len(lrank_textbox.get())!=0:
+        if joinOnPlayerSpe:
+            querySQL = querySQL[0:175] + " join teaminformation ti on ti.club_name=pc.id" + querySQL[175:]
+        else:
+            querySQL = querySQL[0:131] + " join teaminformation ti on ti.club_name=pc.id" + querySQL[131:]
+
+        if len(cname_combo.get())!=0:
+            querySQL = querySQL +" AND club_name='"+cname_combo.get()+"'"
+        if len(lname_combo.get()) != 0:
+            querySQL = querySQL + " AND league_name='" + lname_combo.get() + "'"
+        if len(lrank_textbox.get())!=0:
+            if lrank_textbox.get().isnumeric():
+                querySQL = querySQL +" AND league_rank='"+lrank_textbox.get()+"'"
+            else:
+                messagebox.showerror("Error", "Wrong league rank")
 
     print(querySQL)
-
 
 # backgroud image    
 bg_image = ImageTk.PhotoImage(Image.open("background.jpg"))
@@ -586,10 +615,9 @@ lname_combo.grid(row=1, column=1)
 lrank_label = Label(frame5, text="League Rank:", bg="white")
 lrank_label.grid(row=2, column=0)
 
-lrank = tkinter.IntVar()
-lrank_scale = tkinter.Scale(frame5, variable=lrank, orient="horizontal", showvalue=True, tickinterval=4,
-                            from_=1, to=25, length=200, bg="white")
-lrank_scale.grid(row=2, column=1)
+lrank = tkinter.StringVar()
+lrank_textbox = tkinter.ttk.Entry(frame5, width=22, textvariable=lrank)
+lrank_textbox.grid(row=2, column=1)
 
 # search button 5
 search_button5 = Button(frame5, text="SEARCH", command=search)
