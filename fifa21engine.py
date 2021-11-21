@@ -25,62 +25,45 @@ def getSQLDate(date):
 
 def search():
     clear()
-    whereStatement=False
-    querySQL = str("SELECT playerprofile.id, short_name, nationality FROM playerprofile")
-
+    whereStatement=True
+    querySQL = str("SELECT playerprofile.id, short_name, nationality FROM playerprofile WHERE playerprofile.club_name LIKE '%%' ")
+    print(len(querySQL),"lennn")
 #PLAYER PROFILE PAGE
 
     if name_textbox.get()!="":
-        whereStatement = True
-        querySQL = querySQL+" WHERE long_name LIKE '%"+name_textbox.get()+"%'"
+        querySQL = querySQL+" AND long_name LIKE '%"+name_textbox.get()+"%'"
 
     if age_textbox.get() !="":
         if age_textbox.get().isnumeric():
             if whereStatement:
                 querySQL = querySQL+" AND age="+age_textbox.get()
-            else:
-                whereStatement=True
-                querySQL = querySQL + " WHERE age="+age_textbox.get()
         else:
             messagebox.showerror("Error", "Wrong age")
 
     if height_textbox.get() !="":
         if height_textbox.get().isnumeric():
             if whereStatement:
-                querySQL = querySQL+" AND height="+height_textbox.get()
-            else:
-                whereStatement=True
-                querySQL = querySQL + " WHERE height="+height_textbox.get()
+                querySQL = querySQL+" AND height_cm="+height_textbox.get()
         else:
             messagebox.showerror("Error", "Wrong height")
 
     if weight_textbox.get() !="":
         if weight_textbox.get().isnumeric():
             if whereStatement:
-                querySQL = querySQL+" AND weight>="+weight_textbox.get()
-            else:
-                whereStatement=True
-                querySQL = querySQL + " WHERE weight>="+weight_textbox.get()
+                querySQL = querySQL+" AND weight_kg>="+weight_textbox.get()
         else:
             messagebox.showerror("Error", "Wrong weight")
 
     if nationality_combo.get()!="":
         if whereStatement:
             querySQL = querySQL + " AND nationality='"+nationality_combo.get()+"'"
-        else:
-            whereStatement = True
-            querySQL = querySQL + " WHERE nationality='"+nationality_combo.get()+"'"
 
 
 #PLAYER CHARACTERISTICS PAGE
     join1Done=False
     if whereStatement: #LETS DO THE JOIN HERE
         join1Done=True
-        querySQL = querySQL[0:67]+" join playercharacteristics pc on pc.id=playerprofile.id"+querySQL[67:]+" AND potential>=" + str(potential_scale.get()) + " AND pace>=" + str(pace_scale.get()) + " AND dribbling>=" + str(dribbling_scale.get()) + " AND defending>=" + str(defending_scale.get())+ " AND pace>=" + str(pace_scale.get()) + " AND physic>=" + str(physic_scale.get()) + " AND shooting>=" + str(shooting_scale.get()) + " AND goalkeeper>=" + str(gk_scale.get()) + " AND passing>=" + str(passing_scale.get())
-
-    else:
-        join1Done = True
-        querySQL = querySQL[0:67] + " join playercharacteristics pc on pc.id=playerprofile.id" + querySQL[67:] + " WHERE potential>=" + str(potential_scale.get())+ " AND pace>=" + str(pace_scale.get()) + " AND dribbling>=" + str(dribbling_scale.get()) + " AND defending>=" + str(defending_scale.get()) + " AND pace>=" + str(pace_scale.get()) + " AND physic>=" + str(physic_scale.get()) + " AND shooting>=" + str(shooting_scale.get()) + " AND goalkeeper>=" + str(gk_scale.get()) + " AND passing>=" + str(passing_scale.get())
+        querySQL = querySQL[0:67]+" join playercharacteristics pc on pc.id=playerprofile.id "+querySQL[67:]+" AND potential>=" + str(potential_scale.get()) + " AND pace>=" + str(pace_scale.get()) + " AND dribbling>=" + str(dribbling_scale.get()) + " AND defending>=" + str(defending_scale.get())+ " AND pace>=" + str(pace_scale.get()) + " AND physic>=" + str(physic_scale.get()) + " AND shooting>=" + str(shooting_scale.get()) + " AND goalkeeper>=" + str(gk_scale.get()) + " AND passing>=" + str(passing_scale.get())
 
     if foot_combo.get() != "":
         querySQL = querySQL + " AND preferred_foot='"+foot_combo.get()[0]+"'"
@@ -89,7 +72,7 @@ def search():
     joinOnPlayerSpe= False
     if len(tp_combo.get()) != 0 or len(np_combo.get()) != 0 or len(njnum_textbox.get()) != 0:
         joinOnPlayerSpe = True
-        querySQL = querySQL[0:123] + " join playerspecifications ps on pc.id=ps.id"+querySQL[123:]
+        querySQL = querySQL[0:124] + " join playerspecifications ps on pc.id=ps.id "+querySQL[124:]
 
         if len(tp_combo.get())!=0:
             querySQL = querySQL + " AND team_position='"+tp_combo.get()+"'"
@@ -104,16 +87,16 @@ def search():
 # PLAYER CONTRACT PAGE
 
     if joinOnPlayerSpe:
-        querySQL = querySQL[0:167] + " join playercontract pco on pc.id=pco.id" + querySQL[167:]+" AND value_eur>="+str(value_scale.get())+" AND wage_eur>="+str(wage_scale.get())+" AND release_clause_eur>="+str(rc_scale.get())+" AND join_date>="+str(join.get_date())+" AND contract_valid_until>="+str(cvu_scale.get())
+        querySQL = querySQL[0:170] + " join playercontract pco on pc.id=pco.id " + querySQL[170:]+" AND value_eur>="+str(value_scale.get())+" AND wage_eur>="+str(wage_scale.get())+" AND release_clause_eur>="+str(rc_scale.get())+" AND join_date>="+str(join.get_date())+" AND contract_valid_until>="+str(cvu_scale.get())
     else:
-        querySQL = querySQL[0:123] + " join playercontract pco on pc.id=pco.id" + querySQL[123:] + " AND value_eur>=" + str(value_scale.get()) + " AND wage_eur>=" + str(wage_scale.get()) + " AND release_clause_eur>=" + str(rc_scale.get()) + " AND join_date>=" + getSQLDate(join.get_date()) + " AND contract_valid_until>=" + str(cvu_scale.get())
+        querySQL = querySQL[0:124] + " join playercontract pco on pc.id=pco.id " + querySQL[124:] + " AND value_eur>=" + str(value_scale.get()) + " AND wage_eur>=" + str(wage_scale.get()) + " AND release_clause_eur>=" + str(rc_scale.get()) + " AND join_date>=" + getSQLDate(join.get_date()) + " AND contract_valid_until>=" + str(cvu_scale.get())
 
 #CLUB PAGE
     if len(cname_combo.get())!=0 or len(lname_combo.get())!=0 or len(lrank_textbox.get())!=0:
         if joinOnPlayerSpe:
-            querySQL = querySQL[0:207] + " join teaminformation ti on ti.club_name=playerprofile.club_name" + querySQL[207:]
+            querySQL = querySQL[0:210] + " join teaminformation ti on ti.club_name=playerprofile.club_name " + querySQL[210:]
         else:
-            querySQL = querySQL[0:164] + " join teaminformation ti on ti.club_name=playerprofile.club_name" + querySQL[164:]
+            querySQL = querySQL[0:164] + " join teaminformation ti on ti.club_name=playerprofile.club_name " + querySQL[164:]
 
         if len(cname_combo.get())!=0:
             querySQL = querySQL +" AND playerprofile.club_name='"+cname_combo.get()+"'"
@@ -125,10 +108,12 @@ def search():
             else:
                 messagebox.showerror("Error", "Wrong league rank")
 
+    print(querySQL)
+
     cnx = mysql.connector.connect(
         host="localhost",
         user="root",
-        password="yj0113",
+        password="oscar0405",
         auth_plugin='mysql_native_password'
     )
 
@@ -137,32 +122,40 @@ def search():
     cursor.execute(querySQL+" LIMIT 10;")
     rows = cursor.fetchall()
 
-    title_label = Label(frame6, width=20, text="Players")
-    title_label.config(font=("Century Gothic", 13, BOLD))
-    title_label.grid(row=0, column=1, columnspan=2, pady=5)
+
 
     column_names = ["id", "name", "nationality", "update"]
-    for i in range(len(column_names)):
-        columns_label = Label(frame6, width=10, text=column_names[i], font=("Century Gothic",11))
-        columns_label.grid(row=1, column=i, pady=5)
+    if len(rows)!=0:
+        title_label = Label(frame6, width=20, text="Players")
+        title_label.config(font=("Century Gothic", 13, BOLD))
+        title_label.grid(row=0, column=1, columnspan=2, pady=5)
 
-    rentalids = numpy.zeros(len(rows))
-    buttonsreturn = numpy.array([])
+        for i in range(len(column_names)):
+            columns_label = Label(frame6, width=10, text=column_names[i], font=("Century Gothic",11))
+            columns_label.grid(row=1, column=i, pady=5)
 
-    i = 1
-    for row in rows:
-        i = i + 1
-        rentalids[i - 2] = row[0]
-        for j in range(len(row) + 1):
-            if j == 3:
-                returnButton = Button(frame6, text="Return")
-                buttonsreturn = numpy.append(buttonsreturn, Button(frame6, text="Delete", font=("Arial", 8),
-                                                                command=lambda x=i - 2: deletefun(x)))
-                buttonsreturn[i - 2].grid(padx=25, pady=2, row=i, column=3)
-            else:
-                e = Label(frame6, width=10, text=row[j], bg="white")
-                e.grid(padx=25, pady=2, row=i, column=j, ipadx=25)
-                e.config(font=("Arial", 8))
+        rentalids = numpy.zeros(len(rows))
+        buttonsreturn = numpy.array([])
+
+        i = 1
+        for row in rows:
+            i = i + 1
+            rentalids[i - 2] = row[0]
+            for j in range(len(row) + 1):
+                if j == 3:
+                    returnButton = Button(frame6, text="Return")
+                    buttonsreturn = numpy.append(buttonsreturn, Button(frame6, text="Delete", font=("Arial", 8),
+                                                                    command=lambda x=i - 2: deletefun(x)))
+                    buttonsreturn[i - 2].grid(padx=25, pady=2, row=i, column=3)
+                else:
+                    e = Label(frame6, width=10, text=row[j], bg="white")
+                    e.grid(padx=25, pady=2, row=i, column=j, ipadx=25)
+                    e.config(font=("Arial", 8))
+    else:
+        text = "No players matching the characteristics :("
+        noMatchingLabel = Label(frame6, text=text, bg="white")
+        noMatchingLabel.grid(row=0, column=0, padx=160, pady=200)
+        noMatchingLabel.config(font=("Arial", 20))
 
     def deletefun(rowNumber):
         cursor.execute(
@@ -274,13 +267,6 @@ nationality_combo['values'] = ('Afghanistan', 'Albania', 'Algeria', 'Andorra', '
                                'Zimbabwe')
 nationality_combo.grid(row=4, column=1)
 
-# club
-club_label = Label(frame1, text="Club Name:", bg="white", font=("Century Gothic",12))
-club_label.grid(row=5, column=0)
-
-club = StringVar()
-club_textbox = tkinter.ttk.Entry(frame1, width=22, textvariable=club, font=("Century Gothic", 9))
-club_textbox.grid(row=5, column=1)
 
 # search button
 search_image_1 = ImageTk.PhotoImage(Image.open('search.jpg'))
@@ -476,7 +462,6 @@ cvu = tkinter.IntVar()
 cvu_scale = tkinter.Scale(frame4, variable=cvu, orient="horizontal", showvalue=True, tickinterval=4,
                           from_=2020, to=2028, length=170, bg="white", font=("Century Gothic", 9))
 cvu_scale.grid(row=4, column=1)
-print(cvu)
 
 # search button 4
 search_image_4 = ImageTk.PhotoImage(Image.open('search.jpg'))
