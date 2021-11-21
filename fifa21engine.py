@@ -171,7 +171,7 @@ bg_label.pack()
 
 # logo image
 logo_image = ImageTk.PhotoImage(Image.open("original.png"))
-logo_label = Label(window, image=logo_image, bg="slateblue2")
+logo_label = Label(window, image=logo_image, bg="#524ddd")
 logo_label.place(relx=0.5, rely=0.1, anchor=CENTER)
 
 # tab style
