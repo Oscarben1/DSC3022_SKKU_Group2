@@ -170,7 +170,7 @@ def search():
         search()
 
     if filledCorrectly:
-        tkinter.messagebox.showinfo(title="searchDone", message="See the results int the results field !")
+        tkinter.messagebox.showinfo(title="searchDone", message="See the results in the results field !")
 
 # background image
 bg_image = ImageTk.PhotoImage(Image.open("background.jpg"))
