@@ -24,10 +24,10 @@ def getSQLDate(date):
     return new_date
 
 def search():
+    filledCorrectly=True
     clear()
     whereStatement=True
     querySQL = str("SELECT playerprofile.id, short_name, nationality FROM playerprofile WHERE playerprofile.club_name LIKE '%%' ")
-    print(len(querySQL),"lennn")
 #PLAYER PROFILE PAGE
 
     if name_textbox.get()!="":
@@ -38,6 +38,7 @@ def search():
             if whereStatement:
                 querySQL = querySQL+" AND age="+age_textbox.get()
         else:
+            filledCorrectly=False
             messagebox.showerror("Error", "Wrong age")
 
     if height_textbox.get() !="":
@@ -45,6 +46,7 @@ def search():
             if whereStatement:
                 querySQL = querySQL+" AND height_cm="+height_textbox.get()
         else:
+            filledCorrectly = False
             messagebox.showerror("Error", "Wrong height")
 
     if weight_textbox.get() !="":
@@ -52,6 +54,7 @@ def search():
             if whereStatement:
                 querySQL = querySQL+" AND weight_kg>="+weight_textbox.get()
         else:
+            filledCorrectly = False
             messagebox.showerror("Error", "Wrong weight")
 
     if nationality_combo.get()!="":
@@ -82,6 +85,7 @@ def search():
             if njnum_textbox.get().isnumeric():
                 querySQL = querySQL + " AND nation_jersey_number='"+njnum_textbox.get()+"'"
             else:
+                filledCorrectly = False
                 messagebox.showerror("Error", "Wrong nation jersey number")
 
 # PLAYER CONTRACT PAGE
@@ -106,6 +110,7 @@ def search():
             if lrank_textbox.get().isnumeric():
                 querySQL = querySQL +" AND league_rank='"+lrank_textbox.get()+"'"
             else:
+                filledCorrectly = False
                 messagebox.showerror("Error", "Wrong league rank")
 
     print(querySQL)
@@ -163,6 +168,9 @@ def search():
         cnx.commit()
         messagebox.showinfo("The player has been deleted !")
         search()
+
+    if filledCorrectly:
+        tkinter.messagebox.showinfo(title="searchDone", message="See the results int the results field !")
 
 # background image
 bg_image = ImageTk.PhotoImage(Image.open("background.jpg"))
