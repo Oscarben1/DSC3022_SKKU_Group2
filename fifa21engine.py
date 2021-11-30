@@ -166,7 +166,7 @@ def search():
         cursor.execute(
             "DELETE FROM playerprofile WHERE id=" + str(int(rentalids[rowNumber])) + ";")
         cnx.commit()
-        messagebox.showinfo("The player has been deleted !")
+        messagebox.showinfo(title="Deleted", message="The player has been deleted !")
         search()
 
     if filledCorrectly:
